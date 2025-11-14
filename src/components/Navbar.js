@@ -5,7 +5,7 @@
  * and displays different content based on login status.
  */
 
-import { auth, signIn, signOut } from "@/auth.js"; // <-- ADDED .js
+import { auth, signIn, signOut } from "../auth.js"; // <-- THIS LINE IS CHANGED
 import Link from "next/link";
 
 // This is an async Server Component
