@@ -4,7 +4,7 @@
  * Fulfills Task 4 (Static Server Page with Server-Side Fetch)
  */
 
-import { auth } from "../../auth.js"; // <-- THIS LINE IS CHANGED
+import { auth } from "../../Auth.js"; // <-- normalized casing to match Auth.js
 import { redirect } from "next/navigation";
 
 // Helper function to fetch data
