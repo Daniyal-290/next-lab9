@@ -6,5 +6,7 @@
 
 // We are using the alias '@/auth' which Next.js sets up.
 // This points to the auth.js file in your root.
-import { handlers } from "@/auth";
+import { handlers } from "@/auth.js"; // <-- ADDED .js
+
+// Export the GET and POST handlers for NextAuth
 export const { GET, POST } = handlers;

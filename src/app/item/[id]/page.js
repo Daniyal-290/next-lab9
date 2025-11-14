@@ -4,7 +4,7 @@
  * Fulfills Task 5 (Dynamic Server Page with Server-Side Fetch)
  */
 
-import { auth } from "@/auth";
+import { auth } from "@/auth.js";
 import { redirect } from "next/navigation";
 
 // Helper function to fetch data using the dynamic segment

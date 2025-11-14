@@ -6,7 +6,7 @@
  * -- MODIFIED TO REMOVE FACEBOOK DUE TO ACCOUNT RESTRICTION --
  */
 
-import { auth, signIn } from "@/auth";
+import { auth, signIn } from "@/auth.js"; // <-- ADDED .js
 import { redirect } from "next/navigation";
 
 // This is a helper component for the sign-in buttons
