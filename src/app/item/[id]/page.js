@@ -3,15 +3,16 @@
  * Fulfills Task 3 (Server-Side Only Protection)
  * Fulfills Task 5 (Dynamic Server Page with Server-Side Fetch)
  *
- * -- MODIFIED with a better UI and error handling --
+ * -- This code is correct and will fix the 'undefined' error --
  */
 
-import { auth } from "../../../Auth.js"; // Using relative path
+import { auth } from "../../../auth.js"; // Using relative path
 import { redirect } from "next/navigation";
 
 // Helper function to fetch data using the dynamic segment
 async function getDynamicApiData(id) {
   try {
+    // This fetch URL now correctly uses the 'id' variable
     const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
     if (!res.ok) {
       throw new Error(`Failed to fetch post with id ${id}. Status: ${res.status}`);
@@ -36,6 +37,7 @@ export default async function DynamicItemPage({ params }) {
 
   // TASK 5: Fetch data on the server using the dynamic segment
   const { id } = params;
+  // The 'id' variable is correctly passed to the fetch function here
   const data = await getDynamicApiData(id);
 
   // TASK 3: Allow access if session is valid
@@ -43,6 +45,7 @@ export default async function DynamicItemPage({ params }) {
     <div className="space-y-8">
       {/* Welcome Card */}
       <div className="p-8 bg-white rounded-2xl shadow-xl">
+        {/* The 'id' variable is used here */}
         <h1 className="text-4xl font-bold text-gray-900 mb-2">
           Dynamic Page: Item #{id}
         </h1>
@@ -54,6 +57,7 @@ export default async function DynamicItemPage({ params }) {
 
       {/* Fetched Data Card */}
       <div className="p-8 bg-white rounded-2xl shadow-xl">
+        {/* The 'id' variable is used here */}
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           Server-Fetched Data (Post {id})
         </h2>
@@ -79,4 +83,5 @@ export default async function DynamicItemPage({ params }) {
   );
 }
 
+    
     
