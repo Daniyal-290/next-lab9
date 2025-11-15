@@ -6,64 +6,25 @@
  * -- This code is correct and will fix the 'undefined' error --
  */
 
-import { auth } from "../../../Auth.js"; // Using relative path
+import { auth } from "../../../Auth.js";
 import { redirect, notFound } from "next/navigation";
 
-// Helper function to fetch data using the dynamic segment
-async function getDynamicApiData(id) {
-  try {
-    const res = await fetch(
-      `https://jsonplaceholder.typicode.com/posts/${encodeURIComponent(id)}`
-    );
-
-    // If the API returns 404, signal that explicitly
-    if (!res.ok) {
-      if (res.status === 404) return { notFound: true };
-      throw new Error(`Failed to fetch post with id ${id}. Status: ${res.status}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-    return { error: error.message || "Could not load data." };
-  }
-}
-
 export default async function DynamicItemPage({ params }) {
-  // DEBUG: log params to server console
-  console.log("DynamicItemPage params:", params);
+  // Unwrap params (params can be a Promise in some Next setups)
+  const resolvedParams = await params;
+  const { id } = resolvedParams ?? {};
 
-  const session = await auth();
-
-  // If not authenticated, redirect to sign-in with callback
-  if (!session) {
-    redirect(`/signin?callbackUrl=/item/${params?.id ?? ""}`);
-  }
-
-  const { id } = params ?? {};
-
-  // Defensive: handle missing or literal "undefined" id without crashing to 404
+  // Validate id before doing auth/redirect/fetch
   if (!id || id === "undefined") {
-    console.error("Missing or invalid dynamic id in params:", params);
-    return (
-      <div className="p-8 bg-white rounded-2xl shadow-xl">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Missing item id</h1>
-        <p className="text-gray-600">
-          The requested item id is missing or invalid. Navigate using the header link
-          (e.g. Item 1) or open /item/1 directly.
-        </p>
-      </div>
-    );
-  }
-
-  const data = await getDynamicApiData(id);
-
-  // If upstream API returned 404 for this id, render Next.js 404
-  if (data?.notFound) {
+    console.error("Missing or invalid dynamic id in params:", resolvedParams);
     notFound();
   }
 
-  // TASK 3: Allow access if session is valid
+  const session = await auth();
+  if (!session) {
+    redirect(`/signin?callbackUrl=${encodeURIComponent(`/item/${id}`)}`);
+  }
+
   return (
     <div className="space-y-8">
       {/* Welcome Card */}
