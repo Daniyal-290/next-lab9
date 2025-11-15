@@ -6,7 +6,7 @@
  * -- ADDING DEBUG LOGS --
  */
 
-import { auth } from "../../../auth.js"; // Using relative path
+import { auth } from "../../../Auth.js"; // Using relative path
 import { redirect } from "next/navigation";
 
 // Helper function to fetch data using the dynamic segment
