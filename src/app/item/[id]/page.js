@@ -25,6 +25,9 @@ async function getDynamicApiData(id) {
 }
 
 export default async function DynamicItemPage({ params }) {
+  // DEBUG: log params to server console
+  console.log("DynamicItemPage params:", params);
+
   const session = await auth();
 
   if (!session) {
