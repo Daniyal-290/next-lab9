@@ -7,37 +7,38 @@
  */
 
 import { auth } from "../../../Auth.js"; // Using relative path
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 
 // Helper function to fetch data using the dynamic segment
 async function getDynamicApiData(id) {
   try {
-    // This fetch URL now correctly uses the 'id' variable
-    const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
+    const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${encodeURIComponent(id)}`);
     if (!res.ok) {
+      if (res.status === 404) notFound(); // render Next.js 404 for missing post
       throw new Error(`Failed to fetch post with id ${id}. Status: ${res.status}`);
     }
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
     console.error(error);
-    // Return a more detailed error
     return { error: error.message || "Could not load data." };
   }
 }
 
 export default async function DynamicItemPage({ params }) {
-  // TASK 3: Retrieve session using server authentication
   const session = await auth();
 
-  // TASK 3: Deny access and redirect if no session
   if (!session) {
-    redirect(`/signin?callbackUrl=/item/${params.id}`);
+    redirect(`/signin?callbackUrl=/item/${params?.id ?? ""}`);
   }
 
-  // TASK 5: Fetch data on the server using the dynamic segment
-  const { id } = params;
-  // The 'id' variable is correctly passed to the fetch function here
+  const { id } = params ?? {};
+
+  // Guard: return 404 if id is missing to avoid fetching /posts/undefined
+  if (!id) {
+    console.error("Missing dynamic id in params:", params);
+    notFound();
+  }
+
   const data = await getDynamicApiData(id);
 
   // TASK 3: Allow access if session is valid
@@ -83,5 +84,4 @@ export default async function DynamicItemPage({ params }) {
   );
 }
 
-    
-    
+
