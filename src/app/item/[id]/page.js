@@ -10,20 +10,23 @@ import { auth } from "../../../Auth.js";
 import { redirect, notFound } from "next/navigation";
 
 export default async function DynamicItemPage({ params }) {
-  // Unwrap params (params can be a Promise in some Next setups)
   const resolvedParams = await params;
   const { id } = resolvedParams ?? {};
 
-  // Validate id before doing auth/redirect/fetch
-  if (!id || id === "undefined") {
-    console.error("Missing or invalid dynamic id in params:", resolvedParams);
+  if (!id || id === "undefined") notFound();
+
+  let session;
+  try {
+    session = await auth();
+  } catch (err) {
+    console.error("Auth error in DynamicItemPage:", err);
+    if (process.env.NODE_ENV === "development") {
+      return <pre>{String(err.stack || err.message || err)}</pre>;
+    }
     notFound();
   }
 
-  const session = await auth();
-  if (!session) {
-    redirect(`/signin?callbackUrl=${encodeURIComponent(`/item/${id}`)}`);
-  }
+  if (!session) redirect(`/signin?callbackUrl=${encodeURIComponent(`/item/${id}`)}`);
 
   return (
     <div className="space-y-8">
